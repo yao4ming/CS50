@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
 
     // prepare to spell-check
     int index = 0, misspellings = 0, words = 0;
-    char word[WORD_LENGTH];
+    char word[LENGTH+1];
 
     // spell-check each word in text
     for (int c = fgetc(fp); c != EOF; c = fgetc(fp))
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
             index++;
 
             // ignore alphabetical strings too long to be words
-            if (index > WORD_LENGTH)
+            if (index > LENGTH)
             {
                 // consume remainder of alphabetical string
                 while ((c = fgetc(fp)) != EOF && isalpha(c));

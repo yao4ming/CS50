@@ -17,74 +17,79 @@ int wordNum = 0;
 /**
  * helper hash function
  */
-int hash(const char key) {
-    int index = tolower(key) - 'a';
-    return index % ALPHA_LENGTH;
+int hash(const char* key) {
+    int index = tolower(key[0]) - 'a';
+    return index;
+}
+/**
+ * prints content in hashtable
+ */
+void printHashTable() {
+    for (int i = 0; i < ALPHA_LENGTH; i++) {
+        while (hashTable[i] != NULL) {
+            printf("%s ", hashTable[i]->word);
+            hashTable[i] = hashTable[i]->next;
+            wordNum++;
+        }
+        printf("\n");
+    }
 }
 
 /**
  * Returns true if word is in dictionary else false.
  */
-bool check(const char* word) {
-    node* curr = root;
-
-    int letterpos = 0;
-    int index;
-
-    //traverse trie node foreach letter
-    while(letterpos < strlen(word)) {
-        index = hash(word[letterpos++]);
-        curr = curr->children[index];
-        if(curr == NULL) return 0;
+bool check(const char* temp) {
+    //strToLower
+    char word[LENGTH+1];
+    strncpy(word, temp, LENGTH+1);
+    for (int i = 0; i < word[i]; i++) word[i] = (char) tolower(word[i]);
+    
+    //search
+    int index = hash(word);
+    currPos[index] = hashTable[index];
+    while (currPos[index] != NULL && strcmp(currPos[index]->word, word) != 0) {
+        currPos[index] = currPos[index]->next;
     }
-    return curr->is_word ? 1 : 0;
 
+    return currPos[index] != NULL ? true : false;
 }
 
 /**
  * Loads dictionary into memory.  Returns true if successful else false.
  */
-node* allocateBlock(node* trie) {
-    
-    //allocate memory for trie node
-    trie = malloc(sizeof(node));
-    assert(trie != NULL);
-    
-    //init trie node
-    trie->is_word = false;
-    for(int i = 0; i < ALPHA_LENGTH; i++)
-        trie->children[i] = NULL;
-        
-    //return allocated and initialized trie node   
-    return trie;
+node* allocateNode(node* currNode) {
+    currNode = malloc(sizeof(node));
+    assert(currNode != NULL);
+    strcpy(currNode->word, temp);
+    currNode->next = NULL;
+    return currNode;
 }
 bool load(const char* dictionary) {
     FILE* file = fopen(dictionary, "r");
     assert(file != NULL);
 
-    root = allocateBlock(root);
+    for(int i = 0; i < ALPHA_LENGTH; i++) {
+        hashTable[i] = currPos[i] = NULL;
+    }
 
-    int index, letterPos;
+    //allocate a node for every word read in and insert them into hashtable
+    while((fscanf(file, "%s", temp) == 1)) {  //check for eof
 
-    //read word from file
-    while(fscanf(file, "%s", temp) == 1) {
+        int index = hash(temp);
 
-        //reset for new word
-        letterPos = 0;
-        trie = root;
-
-        while(letterPos < strlen(temp)) {
-            index = hash(temp[letterPos++]); //letter
-
-            //allocate new node if element points to null
-            if(trie->children[index] == NULL) {
-                trie->children[index] = allocateBlock(trie->children[index]);
-            }
-            trie = trie->children[index];
+        //linked-list is empty
+        if(hashTable[index] == NULL) {
+            hashTable[index] = allocateNode(hashTable[index]);
+            currPos[index] = hashTable[index];
+        }
+        //insert node into linked-list
+        else {
+            currPos[index]->next = allocateNode(currPos[index]->next);
+            currPos[index] = currPos[index]->next;
         }
         wordNum++;
-        trie->is_word = true;
     }
+
     fclose(file);
     return true;
 }
@@ -100,6 +105,17 @@ unsigned int size(void) {
  * Unloads dictionary from memory.  Returns true if successful else false.
  */
 bool unload(void) {
-    // TODO
+    for (int i = 0; i < ALPHA_LENGTH; i++) {
+        while (hashTable[i] != NULL) {
+            node* temp = hashTable[i];
+            hashTable[i] = hashTable[i]->next;
+            free(temp);
+        }
+    }
+    
+    //double-check hashtable to empty
+    for (int i = 0; i < ALPHA_LENGTH; i++) {
+        if (hashTable[i] != NULL) return false;
+    }
     return true;
 }

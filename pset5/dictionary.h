@@ -23,18 +23,23 @@
 
 // maximum length for a word
 // (e.g., pneumonoultramicroscopicsilicovolcanoconiosis)
-#define WORD_LENGTH 46
+#define LENGTH 45
 
-//Use trie as data structure for dictionary
 typedef struct node {
-    struct node* children[ALPHA_LENGTH];
-    bool is_word;
+    char word[LENGTH+1];
+    struct node* next;
+
 }node;
-node* trie;
-node* root;
+node* hashTable[ALPHA_LENGTH];
+node* currPos[ALPHA_LENGTH];
 
 //temporary storage for word read-in
-char temp[WORD_LENGTH];
+char temp[LENGTH+1];
+
+/**
+ * prints content in hashtable
+ */
+void printHashTable();
 
 /**
  * Returns true if word is in dictionary else false.
