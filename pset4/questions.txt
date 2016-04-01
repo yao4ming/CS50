@@ -4,16 +4,17 @@
 3.  TODO
 4.  TODO
 5.  TODO
-6.  TODO
+6.  header file
 7.  TODO
-8.  TODO
-9.  TODO
-10. TODO
+8.  1, 4, 4, 2
+9.  0x42 0x4D
+10. BITMAPFILEHEADER structure contains information about the type, size, and layout of a file whereas 
+    BITMAPINFOHEADER structure contains information about the dimensions and color format
 11. TODO
-12. TODO
-13. TODO
-14. TODO
-15. TODO
-16. TODO
-17. TODO
-18. TODO
+12. biBitCount
+13. File not found in search path
+14. Read in one RGBTRIPLE value at a time
+15. 1
+16. Adds offset to cursor and returns position of cursor
+17. Returns position of cursor
+18. Rick Astley
