@@ -1,0 +1,1 @@
+<p><?= print(htmlspecialchars($symbol) . " " . htmlspecialchars($name) . " " . htmlspecialchars($price)); ?></p>
